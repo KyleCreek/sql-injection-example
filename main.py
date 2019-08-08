@@ -12,37 +12,36 @@ def home():
     c = conn.cursor()
 
     if request.method == 'POST':
-
+        # A message'), ('256.256.256.256', You Have been Injected!
+        # "INSERT INTO messages ValueA message'), ('256.256.256.256', 'You Have been Injected!')s(127.0.0.1, A message'), ('256.256.256.256', 'You Have been Injected!'))
         transaction = "INSERT INTO messages VALUES ('{}', '{}')".format(
             request.remote_addr,
             request.form['content'],
-        )
+        ).strip("'")
         c.execute(transaction)
         conn.commit()
 
 
     body = """
-<html>
-<body>
-<h1>Messages</h1>
-<h2>Enter a Message</h2>
-<form method="POST">
-    <label for="content">Message</label>
-    <input type="text" name="content"><br>
+    <html>
+    <body>
+    <h1>Messages</h1>
+    <h2>Enter a Message</h2>
+    <form method="POST">
+        <label for="content">Message</label>
+        <input type="text" name="content"><br>
+        <input type="submit" value="Submit">
+    </form>
 
-    <input type="submit" value="Submit">
-</form>
-
-<h2>Messages</h2>
-"""
-    
+    <h2>Messages</h2>
+    """
+        
     for m in c.execute("SELECT * FROM messages"):
         body += """
-<div class="message">
-{}: {}
-</div>
-""".format(m[0], m[1])
-
+    <div class="message">
+    {}: {}
+    </div>
+    """.format(m[0], m[1])
     c.close()
 
     return body 
